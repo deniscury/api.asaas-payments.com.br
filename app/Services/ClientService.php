@@ -30,7 +30,7 @@ class ClientService extends CurlService
         $this->setEndpoint($endpoint);
     }
 
-    public function registerClient($body){
+    public function register($body){
         $this->setMethod("POST");
         $this->setBody($body);
 
@@ -39,7 +39,15 @@ class ClientService extends CurlService
         return $response;
     }
 
-    public function listClients(){
+    public function update($body){
+        $this->setMethod("PUT");
+        $this->setBody($body);
+
+        $response = $this->request();
+        return $response;
+    }
+
+    public function list(){
         $this->setMethod("GET");
 
         $response = $this->request();
@@ -47,30 +55,32 @@ class ClientService extends CurlService
         return $response;
     }
 
-    public function updateClient(){
+    public function delete(){
         $this->setMethod("DELETE");
         $response = $this->request();
 
         return $response;
     }
 
-    public function restoreClient(){
+    public function restore(){
         $endpoint = $this->getEndpoint();
         $endpoint = explode("?", $endpoint);
 
-        $endpoint = "$endpoint[0]/restore$endpoint[1]";
-
+        $endpoint = "$endpoint[0]/restore?$endpoint[1]";
+        
+        $this->setEndpoint($endpoint);
         $this->setMethod("POST");
         $response = $this->request();
 
         return $response;
     }
 
-    public function notificationClient(){
+    public function notifications(){
         $endpoint = $this->getEndpoint();
 
-        $endpoint = "$endpoint[0]/notification$endpoint[1]";
-
+        $endpoint = "$endpoint[0]/notification?$endpoint[1]";
+        
+        $this->setEndpoint($endpoint);
         $this->setMethod("GET");
         $response = $this->request();
 

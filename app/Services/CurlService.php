@@ -31,7 +31,9 @@ class CurlService
 
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_USERAGENT, "CurlService/1.0 (denis.cury.1995@hotmail.com; +08)");
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
+        if(isset($body) && !is_null($body)){
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
+        }
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
         curl_setopt($curl, CURLOPT_VERBOSE, true);
