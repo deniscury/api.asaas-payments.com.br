@@ -20,8 +20,12 @@ class ClientResource extends JsonResource
             'document' => $this->document,
             'email' => $this->email,
             'phone' => $this->phone,
+            'postal_code' => $this->postal_code,
+            'address' => $this->address,
+            'address_number' => $this->address_number,
+            'invoices' => $this->whenLoaded('invoices'),
             'customer_id' => $this->customer_id,
-            'asaas' => $this->asaas
+            'asaas_data' => $this->whenHas('asaas')
         );
     }
 }

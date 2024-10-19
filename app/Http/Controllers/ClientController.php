@@ -42,7 +42,10 @@ class ClientController extends Controller
                 "name" => $request['name'],
                 "cpfCnpj" => $request['document'],
                 "email"=> $request['email'],
-                "mobilePhone" => $request['phone']
+                "phone" => $request['phone'],
+                "postalCode" => $request['postal_code'],
+                "address" => $request['address'],
+                "addressNumber" => $request['address_number']
             );
 
             $response = json_decode($clientService->register($body));
@@ -80,7 +83,7 @@ class ClientController extends Controller
     public function show($client)
     {
         try{
-            $client = Client::find($client);
+            $client = Client::with('invoices')->find($client);
 
             if (!$client){
                 return AppService::return(Response::HTTP_NOT_FOUND, array(), "Cliente não encontrado");
@@ -118,7 +121,10 @@ class ClientController extends Controller
                 "name" => $request['name'],
                 "cpfCnpj" => $request['document'],
                 "email"=> $request['email'],
-                "mobilePhone" => $request['phone']
+                "phone" => $request['phone'],
+                "postalCode" => $request['postal_code'],
+                "address" => $request['address'],
+                "addressNumber" => $request['address_number']
             );
             
             if (!is_null($client->customer_id)){
@@ -136,6 +142,9 @@ class ClientController extends Controller
                 $client->document = $request['document'];
                 $client->email = $request['email'];
                 $client->phone = $request['phone'];
+                $client->postal_code = $request['postal_code'];
+                $client->address = $request['address'];
+                $client->address_number = $request['address_number'];
                 $client->customer_id = $response->id;
                 
                 $client->save();

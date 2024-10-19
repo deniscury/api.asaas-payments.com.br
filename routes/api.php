@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\InvoiceController;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -46,4 +48,13 @@ Route::prefix('client')->group(function(){
             'restore'
         )
     )->name('client.restore');
+});
+
+Route::prefix('payment')->group(function(){
+    Route::post('client/{client}', 
+        array(
+            InvoiceController::class,
+            'payment'
+        )
+    )->name('invoice.payment');
 });

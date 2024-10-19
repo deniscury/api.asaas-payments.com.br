@@ -3,12 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Constants\MessageConstants;
-use App\Rules\DocumentRule;
+use App\Rules\BillingTypeRule;
 use App\Services\AppService;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-class StoreClientRequest extends FormRequest
+class PaymentInvoiceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,22 +17,13 @@ class StoreClientRequest extends FormRequest
     {
         return true;
     }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return array(
-            "name" => array("required", "min:3", "max:100"),
-            "document" => array("required", "unique:clients", "min:11", "max:14", new DocumentRule),
-            "email" => array("required", "unique:clients", "max:200", "email"),
-            "phone" => array("required", "unique:clients", "min:3", "max:40"),
-            "postal_code" => array("required", "min:8", "max:8"),
-            "address" => array("required", "min:3", "max:200"),
-            "address_number" => array("required", "max:8")
+            "billing_type" => array("required", new BillingTypeRule),
+            "value" => array("required", "numeric", "between:0.01,9999999.99"),
+            "installment_count" => array("integer", "min:2", "max:10"),
+            "installment_value" => array("required_with:installment_count", "decimal", "between:0.01,9999999.99"),
         );
     }
 
@@ -40,7 +31,7 @@ class StoreClientRequest extends FormRequest
     {
         return MessageConstants::getValidationMessages();
     }
-
+    
     public function withValidator($validator){
         if ($validator->fails()) {
             $response = AppService::return(Response::HTTP_BAD_REQUEST, null, "Algo errado aconteceu", $validator->errors());

@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Client extends Model
 {
     use SoftDeletes;
-    
-    protected $fillable = array('name', 'document', 'email', 'phone', 'customer_id');
+
+    protected $fillable = array('name', 'document', 'email', 'phone', 'postal_code', 'address', 'address_number', 'customer_id');
+
+    public function invoices(){
+        return $this->hasMany(Invoice::class);
+    }
 }

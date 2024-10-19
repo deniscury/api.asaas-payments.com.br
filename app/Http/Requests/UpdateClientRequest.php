@@ -32,6 +32,9 @@ class UpdateClientRequest extends FormRequest
             "document" => array("required", Rule::unique('clients', 'document')->whereNot('id', $this->client), "min:11", "max:14", new DocumentRule),
             "email" => array("required", Rule::unique('clients', 'email')->whereNot('id', $this->client), "max:200", "email"),
             "phone" => array("required", Rule::unique('clients', 'phone')->whereNot('id', $this->client), "min:3", "max:40"),
+            "postal_code" => array("required", "min:8", "max:8"),
+            "address" => array("required", "min:3", "max:200"),
+            "address_number" => array("required", "max:8")
         );
     }
 
