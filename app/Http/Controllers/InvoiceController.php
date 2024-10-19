@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 
-use App\Http\Requests\PixInvoiceRequest;
 use App\Http\Requests\BillInvoiceRequest;
 use App\Http\Requests\CreditCardInvoiceRequest;
 use App\Http\Requests\PaymentInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
+
 use App\Models\Client;
 use App\Services\AppService;
 use App\Services\PaymentService;
+
 use Exception;
 use Illuminate\Support\MessageBag;
 use Symfony\Component\HttpFoundation\Response;
@@ -91,8 +92,41 @@ class InvoiceController extends Controller
         //
     }
 
-    public function pix(PixInvoiceRequest $request)
+    public function pix($invoice)
     {
-        //
+        try{
+            $invoice = Invoice::find($invoice); 
+
+            if (!$invoice){
+                return AppService::return(Response::HTTP_NOT_FOUND, array(), "Pedido não encontrado");
+            }
+
+            $paymentService = new PaymentService($invoice->payment_id);
+
+            $response = json_decode($paymentService->pix());            
+            $statusCode = $paymentService->getStatusCode();
+
+            if($statusCode == Response::HTTP_OK){        
+                $invoice->pix = $response;
+
+                if($invoice){
+                    $invoice = new InvoiceResource($invoice);
+                    return AppService::return(Response::HTTP_OK, $invoice);
+                }
+            }
+
+            $errors = isset($response->errors)?$response->errors:false;
+
+            if($errors){
+                $errors = new MessageBag(array_column($errors, 'description'));
+                return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
+            }
+
+            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu");
+        }
+        catch(Exception $e){
+            $error = new MessageBag(array($e->getMessage()));
+            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu", $error);
+        }
     }
 }

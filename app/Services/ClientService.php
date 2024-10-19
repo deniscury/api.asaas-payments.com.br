@@ -77,6 +77,7 @@ class ClientService extends CurlService
 
     public function notifications(){
         $endpoint = $this->getEndpoint();
+        $endpoint = explode("?", $endpoint);
 
         $endpoint = "$endpoint[0]/notification?$endpoint[1]";
         

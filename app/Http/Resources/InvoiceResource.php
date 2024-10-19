@@ -25,7 +25,10 @@ class InvoiceResource extends JsonResource
             'client_id' => $this->client_id,
             'client' => $this->whenLoaded('client'),
             'payment_id' => $this->payment_id,
-            'asaas_data' => $this->whenHas('asaas')
+            'asaas_data' => $this->whenHas('asaas'),
+            'pix' => $this->whenHas('pix'),
+            'bill' => $this->whenHas('bill'),
+            'credit_card' => $this->whenHas('credit_card')
         );
     }
 }

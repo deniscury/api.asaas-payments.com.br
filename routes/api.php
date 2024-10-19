@@ -57,4 +57,11 @@ Route::prefix('payment')->group(function(){
             'payment'
         )
     )->name('invoice.payment');
+
+    Route::get('{invoice}/pix', 
+        array(
+            InvoiceController::class,
+            'pix'
+        )
+    )->name('invoice.pix');
 });

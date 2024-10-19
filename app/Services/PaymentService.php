@@ -43,6 +43,19 @@ class PaymentService extends CurlService
         return $response;
     }
 
+    public function pix(){
+        $endpoint = $this->getEndpoint();
+        $endpoint = explode("?", $endpoint);
+
+        $endpoint = "$endpoint[0]/pixQrCode?$endpoint[1]";
+        
+        $this->setEndpoint($endpoint);
+        $this->setMethod("GET");
+        $response = $this->request();
+
+        return $response;
+    }
+
     /**********************
     **-------------------**
     ** GETTERS E SETTERS **
