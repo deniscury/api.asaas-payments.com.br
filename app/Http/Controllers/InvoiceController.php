@@ -82,9 +82,42 @@ class InvoiceController extends Controller
         }
     }
 
-    public function bill(BillInvoiceRequest $request)
+    public function bill($invoice)
     {
-        //
+        try{
+            $invoice = Invoice::find($invoice); 
+
+            if (!$invoice){
+                return AppService::return(Response::HTTP_NOT_FOUND, array(), "Pedido não encontrado");
+            }
+
+            $paymentService = new PaymentService($invoice->payment_id);
+
+            $response = json_decode($paymentService->bill());            
+            $statusCode = $paymentService->getStatusCode();
+
+            if($statusCode == Response::HTTP_OK){        
+                $invoice->bill = $response;
+
+                if($invoice){
+                    $invoice = new InvoiceResource($invoice);
+                    return AppService::return(Response::HTTP_OK, $invoice);
+                }
+            }
+
+            $errors = isset($response->errors)?$response->errors:false;
+
+            if($errors){
+                $errors = new MessageBag(array_column($errors, 'description'));
+                return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
+            }
+
+            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu");
+        }
+        catch(Exception $e){
+            $error = new MessageBag(array($e->getMessage()));
+            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu", $error);
+        }
     }
 
     public function creditCard(CreditCardInvoiceRequest $request)

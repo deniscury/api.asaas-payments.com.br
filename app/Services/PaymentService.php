@@ -56,6 +56,19 @@ class PaymentService extends CurlService
         return $response;
     }
 
+    public function bill(){
+        $endpoint = $this->getEndpoint();
+        $endpoint = explode("?", $endpoint);
+
+        $endpoint = "$endpoint[0]/identificationField?$endpoint[1]";
+        
+        $this->setEndpoint($endpoint);
+        $this->setMethod("GET");
+        $response = $this->request();
+
+        return $response;
+    }
+
     /**********************
     **-------------------**
     ** GETTERS E SETTERS **

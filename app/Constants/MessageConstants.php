@@ -6,7 +6,7 @@ class MessageConstants
 {
     const VALIDATION_MESSAGES = array(
         'required' => 'O campo :attribute é obrigatório.',
-        'required_with' => 'O campo :attribute é obrigatório quando o campo :other estiver preenchido.',
+        'required_with' => 'O campo :attribute é obrigatório.',
         'min' => 'O campo :attribute deve conter no mínimo :min caracteres.',
         'max' => 'O campo :attribute deve conter no máximo :max caracteres.',
         'integer' => 'O campo :attribute deve ser um número inteiro.',

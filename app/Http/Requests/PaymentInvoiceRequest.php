@@ -22,8 +22,8 @@ class PaymentInvoiceRequest extends FormRequest
         return array(
             "billing_type" => array("required", new BillingTypeRule),
             "value" => array("required", "numeric", "between:0.01,9999999.99"),
-            "installment_count" => array("integer", "min:2", "max:10"),
-            "installment_value" => array("required_with:installment_count", "decimal", "between:0.01,9999999.99"),
+            "installment_count" => array("integer", "between:2,10"),
+            "installment_value" => array("required_with:installment_count", "numeric", "between:0.01,9999999.99"),
         );
     }
 
