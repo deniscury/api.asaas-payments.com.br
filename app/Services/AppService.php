@@ -27,7 +27,7 @@ class AppService
             $retorno['message'] = $message;
         }
 
-        if(!is_null($data)){
+        if(!is_null($data) && !empty($data)){
             $retorno['data'] = $data;
         }
 

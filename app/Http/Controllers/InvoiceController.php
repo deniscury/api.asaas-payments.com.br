@@ -70,7 +70,7 @@ class InvoiceController extends Controller
 
                 if($invoice){
                     $invoice = new InvoiceResource($invoice);
-                    return AppService::return(Response::HTTP_CREATED, $invoice);
+                    return AppService::return(Response::HTTP_CREATED, $invoice, "Pedido gerado com sucesso");
                 }
             }
 
@@ -104,7 +104,7 @@ class InvoiceController extends Controller
 
                 if($invoice){
                     $invoice = new InvoiceResource($invoice);
-                    return AppService::return(Response::HTTP_OK, $invoice);
+                    return AppService::return(Response::HTTP_OK, $invoice, "Pagamento com boleto gerado com sucesso");
                 }
             }
 
@@ -138,7 +138,7 @@ class InvoiceController extends Controller
 
                 if($invoice){
                     $invoice = new InvoiceResource($invoice);
-                    return AppService::return(Response::HTTP_OK, $invoice);
+                    return AppService::return(Response::HTTP_OK, $invoice, "Pagamento com PIX gerado com sucesso");
                 }
             }
 
@@ -198,7 +198,7 @@ class InvoiceController extends Controller
 
                 if($invoice){
                     $invoice = new InvoiceResource($invoice);
-                    return AppService::return(Response::HTTP_OK, $invoice);
+                    return AppService::return(Response::HTTP_OK, $invoice, "Pagamento com cartão de crédito gerado com sucesso");
                 }
             }
 
@@ -244,7 +244,7 @@ class InvoiceController extends Controller
 
                 if($invoice){
                     $invoice = new InvoiceResource($invoice);
-                    return AppService::return(Response::HTTP_OK, $invoice);
+                    return AppService::return(Response::HTTP_OK, $invoice, "Pagamento com dinheiro gerado com sucesso");
                 }
             }
 

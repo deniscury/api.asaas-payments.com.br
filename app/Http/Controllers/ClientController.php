@@ -61,7 +61,7 @@ class ClientController extends Controller
 
                 if($client){
                     $client = new ClientResource($client);
-                    return AppService::return(Response::HTTP_CREATED, $client);
+                    return AppService::return(Response::HTTP_CREATED, $client, "Cliente cadastrado com sucesso");
                 }
             }
 
@@ -148,7 +148,7 @@ class ClientController extends Controller
                 $client->asaas = $response;
 
                 $client = new ClientResource($client);
-                return AppService::return(Response::HTTP_CREATED, $client);
+                return AppService::return(Response::HTTP_OK, $client, "Cliente alterado com sucesso");
             }
 
             $errors = isset($response->errors)?$response->errors:false;
