@@ -47,23 +47,36 @@ class DocumentRule implements ValidationRule
     }
 
     public function validateCNPJ($document){
-        $document = preg_replace('/[^0-9]/', '', $document);
+        $document = preg_replace('/[^0-9]/', '', (string) $document);
 
-        for ($i = 5; $i <= 12; $i++) {
-            $sum = 0;
-            $multiply = 2;
-            for ($j = $i; $j >= 0; $j--) {
-                $multiply = $multiply <= 9 ? $multiply : 2;
-                $sum += $document[$j] * $multiply;
-                $multiply++;
-            }
-
-            $rest = $sum % 11;
-            $digit = $rest < 2 ? 0 : 11 - $rest;
-            if ($document[$i - 7] != $digit) {
-                return false;
-            }
+        if (strlen($document) != 14){
+            return false;
         }
-        return true;
+        
+	    if (preg_match('/(\d)\1{13}/', $document)){
+		    return false;	
+        }
+        
+	    for ($i = 0, $j = 5, $sum = 0; $i < 12; $i++){
+		    $sum += $document[$i] * $j;
+		    $j = ($j == 2) ? 9 : $j - 1;
+	    }
+
+	    $rest = $sum % 11;
+
+	    if ($document[12] != ($rest < 2 ? 0 : 11 - $rest)){
+		    return false;
+        }
+
+	    for ($i = 0, $j = 6, $sum = 0; $i < 13; $i++){
+		    $sum += $document[$i] * $j;
+		    $j = ($j == 2) ? 9 : $j - 1;
+	    }
+
+	    $rest = $sum % 11;
+
+	    return $document[13] == ($rest < 2 ? 0 : 11 - $rest);
     }
+
+    
 }
