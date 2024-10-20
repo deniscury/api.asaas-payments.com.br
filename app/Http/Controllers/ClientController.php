@@ -21,7 +21,7 @@ class ClientController extends Controller
     public function index()
     {     
         try{
-            $clients = new ClientsCollection(Client::all());
+            $clients = new ClientsCollection(Client::withTrashed()->get());
 
             return AppService::return(Response::HTTP_OK, $clients);
         }

@@ -13,7 +13,7 @@ class MessageConstants
         'decimal' => 'O campo :attribute deve ser um número decimal com :decimal casas.',
         'numeric' => 'O campo :attribute deve ser um número.',
         'between' => 'O campo :attribute deve conter um número entre :min e :max.',
-        'exists' => 'Identificamos que o registro já existe.',
+        'exists' => 'Identificamos que o :attribute :input já existe.',
         'unique' => 'Identificamos que o :attribute :input já existe.',
         'date_format' => 'O campo :attribute está no formato incorreto.',
         'email' => 'O email preenchido é inválido.'
