@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Client;
 
-use App\Http\Requests\BillInvoiceRequest;
 use App\Http\Requests\CreditCardInvoiceRequest;
 use App\Http\Requests\PaymentInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
+use App\Http\Resources\InvoicesCollection;
 
-use App\Models\Client;
 use App\Services\AppService;
 use App\Services\PaymentService;
 
@@ -19,6 +19,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InvoiceController extends Controller
 {
+    public function index()
+    {     
+        try{
+            $invoices = new InvoicesCollection(Invoice::all());
+
+            return AppService::return(Response::HTTP_OK, $invoices);
+        }
+        catch(Exception $e){
+            $error = new MessageBag(array($e->getMessage()));
+            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu", $error);
+        }
+    }
+
     public function payment(PaymentInvoiceRequest $request, $client)
     {
         try{
@@ -32,20 +45,14 @@ class InvoiceController extends Controller
             
             $paymentService = new PaymentService();
 
-            $paymentService->setCustomerId($client->customer_id);
-
             $dueDate = date_format(now(), 'Y-m-d');
 
             $body = array(
+                "customer" => $client->customer_id,
                 "billingType" => $request['billing_type'],
                 "dueDate" => $dueDate,
                 "value"=> $request['value']
             );
-
-            if (isset($request['installment_count']) && $request['installment_count'] > 1){
-                $body['installmentCount'] = $request['installment_count'];
-                $body['installmentValue'] = $request['installment_value'];
-            }
 
             $response = json_decode($paymentService->generate($body));
             
@@ -68,13 +75,9 @@ class InvoiceController extends Controller
             }
 
             $errors = isset($response->errors)?$response->errors:false;
-
-            if($errors){
-                $errors = new MessageBag(array_column($errors, 'description'));
-                return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
-            }
-
-            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu");
+            $errors = new MessageBag(($errors?array_column($errors, 'description'):array()));
+            
+            return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
         }
         catch(Exception $e){
             $error = new MessageBag(array($e->getMessage()));
@@ -106,24 +109,15 @@ class InvoiceController extends Controller
             }
 
             $errors = isset($response->errors)?$response->errors:false;
+            $errors = new MessageBag(($errors?array_column($errors, 'description'):array()));
 
-            if($errors){
-                $errors = new MessageBag(array_column($errors, 'description'));
-                return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
-            }
-
-            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu");
+            return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
         }
         catch(Exception $e){
             $error = new MessageBag(array($e->getMessage()));
             return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu", $error);
         }
-    }
-
-    public function creditCard(CreditCardInvoiceRequest $request)
-    {
-        //
-    }
+    }    
 
     public function pix($invoice)
     {
@@ -149,13 +143,115 @@ class InvoiceController extends Controller
             }
 
             $errors = isset($response->errors)?$response->errors:false;
+            $errors = new MessageBag(($errors?array_column($errors, 'description'):array()));
+            
+            return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
+        }
+        catch(Exception $e){
+            $error = new MessageBag(array($e->getMessage()));
+            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu", $error);
+        }
+    }
 
-            if($errors){
-                $errors = new MessageBag(array_column($errors, 'description'));
-                return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
+    public function creditCard(CreditCardInvoiceRequest $request, $invoice)
+    {
+        try{
+            $request = $request->validated();
+
+            $invoice = Invoice::with('client')->find($invoice); 
+
+            if (!$invoice){
+                return AppService::return(Response::HTTP_NOT_FOUND, array(), "Pedido não encontrado");
             }
 
-            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu");
+            $paymentService = new PaymentService($invoice->payment_id);    
+            $client = $invoice->client;        
+
+            $body = array(
+                "creditCard" => array(
+                    "holderName" => $client->name,
+                    "number" => $request['card_number'],
+                    "expiryMonth" => $request['expiry_month'],
+                    "expiryYear" => $request['expiry_year'],
+                    "ccv" => $request['ccv']
+                ),
+                "creditCardHolderInfo" => array(
+                    'name' => $client->name,
+                    'email' => $client->email,
+                    'cpfCnpj' => $client->document,
+                    'postalCode' => $client->postal_code,
+                    'addressComplement' => $client->address,
+                    'addressNumber' => $client->address_number,
+                    'phone' => $client->phone
+                )
+            );
+            
+            $response = json_decode($paymentService->creditCard($body));    
+            
+            $statusCode = $paymentService->getStatusCode();
+
+            if($statusCode == Response::HTTP_OK){   
+                $invoice->status = $response->status;
+                $invoice->save();
+                
+                $invoice->credit_card = $response;
+
+                if($invoice){
+                    $invoice = new InvoiceResource($invoice);
+                    return AppService::return(Response::HTTP_OK, $invoice);
+                }
+            }
+
+            $errors = isset($response->errors)?$response->errors:false;
+            $errors = new MessageBag(($errors?array_column($errors, 'description'):array()));
+            
+            return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
+        }
+        catch(Exception $e){
+            $error = new MessageBag(array($e->getMessage()));
+            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu", $error);
+        }
+    }
+
+    public function money($invoice)
+    {
+        try{
+            $invoice = Invoice::find($invoice); 
+
+            if (!$invoice){
+                return AppService::return(Response::HTTP_NOT_FOUND, array(), "Pedido não encontrado");
+            }
+
+            $paymentService = new PaymentService($invoice->payment_id); 
+
+            $paymentDate = date_format(now(), 'Y-m-d');      
+
+            $body = array(
+                "paymentDate" => $paymentDate,
+                "value" => $invoice->value,
+                "notifyCustomer" => true
+            );
+            
+            $response = json_decode($paymentService->money($body));    
+            
+            $statusCode = $paymentService->getStatusCode();
+
+            if($statusCode == Response::HTTP_OK){   
+                $invoice->status = $response->status;
+                $invoice->save();
+                
+                $invoice->credit_card = $response;
+
+                if($invoice){
+                    $invoice = new InvoiceResource($invoice);
+                    return AppService::return(Response::HTTP_OK, $invoice);
+                }
+            }
+
+            $errors = isset($response->errors)?$response->errors:false;
+            $errors = new MessageBag(($errors?array_column($errors, 'description'):array()));
+            
+            return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
         }
         catch(Exception $e){
             $error = new MessageBag(array($e->getMessage()));

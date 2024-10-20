@@ -19,28 +19,20 @@ class CurlService
         $method = $this->getMethod();
         $header = $this->getHeader();
         $body = $this->getBody();
-
-        if ($method == "POST"){
-            curl_setopt($curl, CURLOPT_POST, 1);
-        }
-        else{
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
-        }
-
-        $verbose = fopen('php://temp', 'w+');
-
+        
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_USERAGENT, "CurlService/1.0 (denis.cury.1995@hotmail.com; +08)");
+
         if(isset($body) && !is_null($body)){
             curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
         }
+        
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($curl, CURLOPT_VERBOSE, true);
         curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt($curl, CURLOPT_STDERR, $verbose);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
 
         $response = curl_exec($curl);
 

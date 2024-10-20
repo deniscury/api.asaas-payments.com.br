@@ -10,20 +10,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PaymentInvoiceRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
+
     public function rules(): array
     {
         return array(
             "billing_type" => array("required", new BillingTypeRule),
-            "value" => array("required", "numeric", "between:0.01,9999999.99"),
-            "installment_count" => array("integer", "between:2,10"),
-            "installment_value" => array("required_with:installment_count", "numeric", "between:0.01,9999999.99"),
+            "value" => array("required", "numeric", "between:0.01,9999999.99")
         );
     }
 

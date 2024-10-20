@@ -66,13 +66,9 @@ class ClientController extends Controller
             }
 
             $errors = isset($response->errors)?$response->errors:false;
-
-            if($errors){
-                $errors = new MessageBag(array_column($errors, 'description'));
-                return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
-            }
-
-            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu");
+            $errors = new MessageBag(($errors?array_column($errors, 'description'):array()));
+            
+            return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
         }
         catch(Exception $e){
             $error = new MessageBag(array($e->getMessage()));
@@ -126,9 +122,9 @@ class ClientController extends Controller
                 "address" => $request['address'],
                 "addressNumber" => $request['address_number']
             );
-            
+            $body = json_encode($body);
+
             if (!is_null($client->customer_id)){
-                $body = json_encode($body);
                 $response = json_decode($clientService->update($body));                
             }
             else{
@@ -156,13 +152,9 @@ class ClientController extends Controller
             }
 
             $errors = isset($response->errors)?$response->errors:false;
-
-            if($errors){
-                $errors = new MessageBag(array_column($errors, 'description'));
-                return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
-            }
+            $errors = new MessageBag(($errors?array_column($errors, 'description'):array()));
             
-            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu");
+            return AppService::return($statusCode, null, 'Algo errado aconteceu', $errors);
         }
         catch(Exception $e){
             $error = new MessageBag(array($e->getMessage()));

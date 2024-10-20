@@ -18,8 +18,6 @@ class InvoiceResource extends JsonResource
             'id' => $this->id,
             'billing_type' => $this->billing_type,
             'due_date' => $this->due_date,
-            'installment_count' => $this->installment_count,
-            'installment_value' => $this->installment_value,
             'value' => $this->value,
             'status' => $this->status,
             'client_id' => $this->client_id,

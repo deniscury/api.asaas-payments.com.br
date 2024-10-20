@@ -16,8 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('client_id');
             $table->string("billing_type", 20);
             $table->date('due_date');
-            $table->integer('installment_count')->nullable();
-            $table->decimal("installment_value", 9, 2)->nullable();
             $table->decimal("value", 9, 2);
             $table->string("status", 20);
             $table->string("payment_id", 30)->nullable();

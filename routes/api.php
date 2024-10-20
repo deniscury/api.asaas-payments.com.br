@@ -51,6 +51,13 @@ Route::prefix('client')->group(function(){
 });
 
 Route::prefix('payment')->group(function(){
+    Route::get('', 
+        array(
+            InvoiceController::class,
+            'index'
+        )
+    )->name('invoice.index');
+
     Route::post('client/{client}', 
         array(
             InvoiceController::class,
@@ -71,4 +78,18 @@ Route::prefix('payment')->group(function(){
             'bill'
         )
     )->name('invoice.bill');
+
+    Route::post('{invoice}/credit-card', 
+        array(
+            InvoiceController::class,
+            'creditCard'
+        )
+    )->name('invoice.creditCard');
+
+    Route::get('{invoice}/money', 
+        array(
+            InvoiceController::class,
+            'money'
+        )
+    )->name('invoice.money');
 });
