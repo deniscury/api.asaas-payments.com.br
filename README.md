@@ -466,6 +466,20 @@ Siga estes passos para configurar o projeto Asaas Payment:
                 "value": "2357.91",
                 "status": "PENDING",
                 "client_id": 1,
+                "client": {
+                    "id": 1,
+                    "name": "Denis Cury Ortiz",
+                    "document": "62919997000135",
+                    "email": "denis.cury.1996@hotmail.com",
+                    "phone": "14998326011",
+                    "postal_code": "18800000",
+                    "address": "Rua Celso do Amaral",
+                    "address_number": "501",
+                    "customer_id": "cus_000006298156",
+                    "created_at": "2024-10-20T15:06:19.000000Z",
+                    "updated_at": "2024-10-20T18:08:31.000000Z",
+                    "deleted_at": null
+                },
                 "payment_id": "pay_ibgo43pu4ul1gjfq"
             },
             {
@@ -473,18 +487,63 @@ Siga estes passos para configurar o projeto Asaas Payment:
                 "billing_type": "CREDIT_CARD",
                 "due_date": "2024-10-20",
                 "value": "1542.90",
-                "status": "PENDING",
+                "status": "CONFIRMED",
                 "client_id": 2,
+                "client": {
+                    "id": 2,
+                    "name": "Denis Cury",
+                    "document": "18050029026",
+                    "email": "denis.cury.1998@hotmail.com",
+                    "phone": "14998326013",
+                    "postal_code": "18800000",
+                    "address": "Rua Israel dos Santos Guerra",
+                    "address_number": "150",
+                    "customer_id": "cus_000006298159",
+                    "created_at": "2024-10-20T15:09:11.000000Z",
+                    "updated_at": "2024-10-20T17:11:09.000000Z",
+                    "deleted_at": null
+                },
                 "payment_id": "pay_l7fnosmld5ogmrdb"
-            },
+            }
+        ]
+    ]
+}
+```
+
+#### Listar por cliente
+
+-   **Método:** GET
+-   **Endpoint:** /payment/client/{client}
+-   **Resposta:**
+    -   `status`: 200 - OK
+
+```json
+{
+    "message": "Sucesso",
+    "data": [
+        [
             {
-                "id": 3,
-                "billing_type": "BOLETO",
+                "id": 1,
+                "billing_type": "PIX",
                 "due_date": "2024-10-20",
-                "value": "256.31",
+                "value": "2357.91",
                 "status": "PENDING",
-                "client_id": 3,
-                "payment_id": "pay_cmmv92oiovzte3x8"
+                "client_id": 1,
+                "client": {
+                    "id": 1,
+                    "name": "Denis Cury Ortiz",
+                    "document": "62919997000135",
+                    "email": "denis.cury.1996@hotmail.com",
+                    "phone": "14998326011",
+                    "postal_code": "18800000",
+                    "address": "Rua Celso do Amaral",
+                    "address_number": "501",
+                    "customer_id": "cus_000006298156",
+                    "created_at": "2024-10-20T15:06:19.000000Z",
+                    "updated_at": "2024-10-20T18:08:31.000000Z",
+                    "deleted_at": null
+                },
+                "payment_id": "pay_ibgo43pu4ul1gjfq"
             }
         ]
     ]
