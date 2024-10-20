@@ -19,9 +19,9 @@ class StoreClientRequest extends FormRequest
     {
         return array(
             "name" => array("required", "min:3", "max:100"),
-            "document" => array("required", "unique:clients", "min:11", "max:14", new DocumentRule),
-            "email" => array("required", "unique:clients", "max:200", "email"),
-            "phone" => array("required", "unique:clients", "min:3", "max:40"),
+            "document" => array("required", "exists:clients,document", "min:11", "max:14", new DocumentRule),
+            "email" => array("required", "exists:clients,document", "max:200", "email"),
+            "phone" => array("required", "exists:clients,document", "min:3", "max:40"),
             "postal_code" => array("required", "min:8", "max:8"),
             "address" => array("required", "min:3", "max:200"),
             "address_number" => array("required", "max:8")
