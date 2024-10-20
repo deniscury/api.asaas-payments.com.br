@@ -22,7 +22,7 @@ class InvoiceController extends Controller
     public function index()
     {     
         try{
-            $invoices = new InvoicesCollection(Invoice::with("client")->get());
+            $invoices = new InvoicesCollection(Invoice::with("client")->whereHas("client")->get());
 
             return AppService::return(Response::HTTP_OK, $invoices);
         }
