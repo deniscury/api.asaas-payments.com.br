@@ -3,28 +3,25 @@
 namespace App\Http\Requests;
 
 use App\Constants\MessageConstants;
-use App\Rules\DocumentRule;
+use App\Rules\CreditCardRule;
 use App\Services\AppService;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-class StoreClientRequest extends FormRequest
+class CreditCardInvoiceRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return true;
     }
-    
+
     public function rules(): array
     {
         return array(
-            "name" => array("required", "min:3", "max:100"),
-            "document" => array("required", "unique:clients", "min:11", "max:14", new DocumentRule),
-            "email" => array("required", "unique:clients", "max:200", "email"),
-            "phone" => array("required", "unique:clients", "min:3", "max:40"),
-            "postal_code" => array("required", "min:8", "max:8"),
-            "address" => array("required", "min:3", "max:200"),
-            "address_number" => array("required", "max:8")
+            "card_number" => array("required", new CreditCardRule),
+            "expiry_month" => array("required", "date_format:m"),
+            "expiry_year" => array("required", "date_format:Y"),
+            "ccv" => array("required", "digits_between:3,4"),
         );
     }
 
@@ -32,7 +29,7 @@ class StoreClientRequest extends FormRequest
     {
         return MessageConstants::getValidationMessages();
     }
-
+    
     public function withValidator($validator){
         if ($validator->fails()) {
             $response = AppService::return(Response::HTTP_BAD_REQUEST, null, "Algo errado aconteceu", $validator->errors());
