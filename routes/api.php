@@ -58,6 +58,13 @@ Route::prefix('payment')->group(function(){
         )
     )->name('invoice.index');
 
+    Route::get('client/{client}', 
+        array(
+            InvoiceController::class,
+            'index'
+        )
+    )->name('invoice.index');
+
     Route::post('client/{client}', 
         array(
             InvoiceController::class,

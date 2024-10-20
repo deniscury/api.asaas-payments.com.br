@@ -19,10 +19,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InvoiceController extends Controller
 {
-    public function index()
+    public function index($client = null)
     {     
         try{
-            $invoices = new InvoicesCollection(Invoice::with("client")->whereHas("client")->get());
+            $invoices = Invoice::with("client")->whereHas("client");
+
+            if (!is_null($client)){
+                $invoices = $invoices->whereRelation("client", "id", $client);
+            }
+
+            $invoices = new InvoicesCollection($invoices->get());
 
             return AppService::return(Response::HTTP_OK, $invoices);
         }
