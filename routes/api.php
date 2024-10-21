@@ -50,13 +50,20 @@ Route::prefix('client')->group(function(){
     )->name('client.restore');
 });
 
-Route::prefix('payment')->group(function(){
+Route::prefix('invoice')->group(function(){
     Route::get('', 
         array(
             InvoiceController::class,
             'index'
         )
     )->name('invoice.index');
+
+    Route::get('/{invoice}', 
+        array(
+            InvoiceController::class,
+            'show'
+        )
+    )->name('invoice.show');
 
     Route::get('client/{client}', 
         array(
