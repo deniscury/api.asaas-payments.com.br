@@ -1,7 +1,3 @@
-Aqui está uma versão aprimorada e mais técnica do seu `README.md` para o projeto Asaas Payment, em português:
-
----
-
 # Asaas Payment - Guia de Instalação
 
 ## Requisitos do Sistema
