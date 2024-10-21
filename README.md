@@ -445,12 +445,12 @@ Siga estes passos para configurar o projeto Asaas Payment:
 }
 ```
 
-### Payments
+### Invoices
 
 #### Listar todos
 
 -   **Método:** GET
--   **Endpoint:** /payment
+-   **Endpoint:** /invoice
 -   **Resposta:**
     -   `status`: 200 - OK
 
@@ -510,10 +510,83 @@ Siga estes passos para configurar o projeto Asaas Payment:
 }
 ```
 
+#### Buscar
+
+-   **Método:** GET
+-   **Endpoint:** /invoice/{invoice}
+-   **Resposta:**
+    -   `status`: 200 - OK ou 404 - NOT FOUND
+
+```json
+#### Listar todos
+
+-   **Método:** GET
+-   **Endpoint:** /invoice
+-   **Resposta:**
+    -   `status`: 200 - OK
+
+```json
+{
+    "message": "Sucesso",
+    "data": [
+        [
+            {
+                "id": 1,
+                "billing_type": "PIX",
+                "due_date": "2024-10-20",
+                "value": "2357.91",
+                "status": "PENDING",
+                "client_id": 1,
+                "client": {
+                    "id": 1,
+                    "name": "Denis Cury Ortiz",
+                    "document": "62919997000135",
+                    "email": "denis.cury.1996@hotmail.com",
+                    "phone": "14998326011",
+                    "postal_code": "18800000",
+                    "address": "Rua Celso do Amaral",
+                    "address_number": "501",
+                    "customer_id": "cus_000006298156",
+                    "created_at": "2024-10-20T15:06:19.000000Z",
+                    "updated_at": "2024-10-20T18:08:31.000000Z",
+                    "deleted_at": null
+                },
+                "payment_id": "pay_ibgo43pu4ul1gjfq"
+            },
+            {
+                "id": 2,
+                "billing_type": "CREDIT_CARD",
+                "due_date": "2024-10-20",
+                "value": "1542.90",
+                "status": "CONFIRMED",
+                "client_id": 2,
+                "client": {
+                    "id": 2,
+                    "name": "Denis Cury",
+                    "document": "18050029026",
+                    "email": "denis.cury.1998@hotmail.com",
+                    "phone": "14998326013",
+                    "postal_code": "18800000",
+                    "address": "Rua Israel dos Santos Guerra",
+                    "address_number": "150",
+                    "customer_id": "cus_000006298159",
+                    "created_at": "2024-10-20T15:09:11.000000Z",
+                    "updated_at": "2024-10-20T17:11:09.000000Z",
+                    "deleted_at": null
+                },
+                "payment_id": "pay_l7fnosmld5ogmrdb"
+            }
+        ]
+    ]
+}
+```
+
+```
+
 #### Listar por cliente
 
 -   **Método:** GET
--   **Endpoint:** /payment/client/{client}
+-   **Endpoint:** /invoice/client/{client}
 -   **Resposta:**
     -   `status`: 200 - OK
 
@@ -553,7 +626,7 @@ Siga estes passos para configurar o projeto Asaas Payment:
 #### Gerar cobrança
 
 -   **Método:** POST
--   **Endpoint:** /payment
+-   **Endpoint:** /invoice
 -   **Parâmetros:**
     -   `billing_type`: Tipo de cobrança (PIX, CREDIT_CARD, BOLETO)
     -   `value`: Valor
@@ -643,7 +716,7 @@ Siga estes passos para configurar o projeto Asaas Payment:
 #### PIX
 
 -   **Método:** GET
--   **Endpoint:** /payment/{$payment}/pix
+-   **Endpoint:** /invoice/{$invoice}/pix
 -   **Resposta:**
     -   `status`: 200 - OK, 400 - BAD REQUEST, 404 - NOT FOUND ou 500 - INTERNAL SERVER ERROR
 
@@ -682,7 +755,7 @@ Siga estes passos para configurar o projeto Asaas Payment:
 #### Boleto
 
 -   **Método:** GET
--   **Endpoint:** /payment/{$payment}/bill
+-   **Endpoint:** /invoice/{$invoice}/bill
 -   **Resposta:**
     -   `status`: 200 - OK, 400 - BAD REQUEST, 404 - NOT FOUND ou 500 - INTERNAL SERVER ERROR
 
@@ -720,7 +793,7 @@ Siga estes passos para configurar o projeto Asaas Payment:
 #### Cartão de Crédito
 
 -   **Método:** POST
--   **Endpoint:** /payment/{$payment}/credit-card
+-   **Endpoint:** /invoice/{$invoice}/credit-card
 -   **Parâmetros:**
     -   `card_number`: Número do cartão
     -   `expiry_month`: Mês de vencimento do cartão

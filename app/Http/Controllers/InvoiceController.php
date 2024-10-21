@@ -37,6 +37,30 @@ class InvoiceController extends Controller
             return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu", $error);
         }
     }
+    
+    public function show($invoice)
+    {
+        try{
+            $invoice = Invoice::with('client')->find($invoice);
+
+            if (!$invoice){
+                return AppService::return(Response::HTTP_NOT_FOUND, array(), "Pedido não encontrado");
+            }
+
+            if (!is_null($invoice->payment_id)){
+                $paymentService = new PaymentService($invoice->payment_id);
+
+                $invoice->asaas = json_decode($paymentService->list());
+            }
+
+            $invoice = new InvoiceResource($invoice);
+            return AppService::return(Response::HTTP_OK, $invoice);
+        }
+        catch(Exception $e){
+            $error = new MessageBag(array($e->getMessage()));
+            return AppService::return(Response::HTTP_INTERNAL_SERVER_ERROR, array(), "Algo errado aconteceu", $error);
+        }
+    }
 
     public function payment(PaymentInvoiceRequest $request, $client)
     {

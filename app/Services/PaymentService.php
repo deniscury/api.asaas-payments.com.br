@@ -30,6 +30,14 @@ class PaymentService extends CurlService
         $this->setEndpoint($endpoint);
     }
 
+    public function list(){
+        $this->setMethod("GET");
+
+        $response = $this->request();
+
+        return $response;
+    }
+
     public function generate($body){
         $this->setMethod("POST");
 
